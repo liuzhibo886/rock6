@@ -1,0 +1,176 @@
+/**
+ * ${comment}管理初始化
+ */
+var ${bizEnBigName} = {
+    tableId: "${bizEnName}Table",	//表格id
+    table: null,
+    layerIndex: -1
+};
+
+/**
+ * 初始化表格的列
+ */
+${bizEnBigName}.initColumn = function () {
+    return [[
+        <% for(item in table.fields!){ %>
+        <% if(itemLP.last != true){ %>
+        <% if(item.propertyName == "lastUser"){%>
+         {field: '${item.propertyName}', title: '${item.comment}'},
+        <% } else{%>
+         {field: '${item.propertyName}', title: '${item.comment}'},
+        <%}%>           
+        <% }else{ %>
+         <% if(item.propertyName == "lastUser"){%>
+         {field: '${item.propertyName}', title: '${item.comment}',templet:function(obj){
+        	 return Util.getUserName(obj.lastUser);
+         }},
+        <% } else{%>
+         {field: '${item.propertyName}', title: '${item.comment}'},
+        <%}%>
+        <% }} %>
+        {fixed: 'right', title:'操作', toolbar: '#${bizEnName}Bar', width:120}
+    ]];
+};
+/**
+ * 初始化表格
+ */
+${bizEnBigName}.initTable =function(){
+	var table = layui.table;
+	// 初始化
+	table.render({
+		elem : '#' + this.tableId,// 表格ID
+		title : "用户列表",// 表格标题
+		url : Feng.ctxPath+"/${bizProjectName}/${moduleName}/${bizEnName}/list",// 请求URL
+		method :'post',// 请求类型
+		page : true,// 是否分页
+		parseData :Feng.parseDataFuc, // 解析任意格式数据
+		cellMinWidth : 80,// 表格最小宽度
+		contentType :'application/json',
+		toolbar : "#${bizEnName}Toolbar",// 表格头部模板ID
+		height : 'full-100',// 全屏
+		cols : this.initColumn()
+	});
+	// 监听单元格编辑
+		table.on('edit(' + this.tableId + ')', this.editFuc);
+	// 头工具栏事件
+		table.on('toolbar(' + this.tableId + ')', this.toolbarFuc);
+	// 监听行工具事件
+		table.on('tool(' + this.tableId + ')', this.toolFuc);
+		this.table=table;
+}
+/**
+ * 点击添加${table.comment}
+ */
+${bizEnBigName}.openAdd${bizEnBigName} = function () {
+    var index = layer.open({
+        type: 2,
+        title: '添加${table.comment}',
+        area: ['100%', '100%'], //宽高
+        fix: false, //不固定
+        maxmin: true,
+        content: Feng.ctxPath + '/${bizProjectName}/${moduleName}/${bizEnName}/${bizEnName}_add'
+    });
+    this.layerIndex = index;
+};
+
+/**
+ * 打开查看${table.comment}详情
+ */
+
+${bizEnBigName}.open${bizEnBigName}Detail = function (${keyTableField.propertyName}<% if(subTableField !=null){%>,${subTableField.propertyName}<%}%>) {
+        var index = layer.open({
+            type: 2,
+            title: '${table.comment}详情',
+            area: ['100%', '100%'], //宽高
+            fix: false, //不固定
+            maxmin: true,
+            content: Feng.ctxPath + '/${bizProjectName}/${moduleName}/${bizEnName}/${bizEnName}_update/?${keyTableField.propertyName}=' +${keyTableField.propertyName}<% if(subTableField !=null){%>+"&${subTableField.propertyName}="+${subTableField.propertyName} <% }%> 
+        });
+        this.layerIndex = index;
+};
+
+/**
+ * 删除${table.comment}
+ */
+      <% if(subTableField !=null){%>
+${bizEnBigName}.delete = function(${keyTableField.propertyName},${subTableField.propertyName}) {
+      <% }else{ %>
+${bizEnBigName}.delete = function(${keyTableField.propertyName}) {
+      <% } %>
+	var ajax = new $ax(Feng.ctxPath + "/${bizProjectName}/${moduleName}/${bizEnName}/delete", function (data) {
+ 	Feng.success("删除成功!");
+	${bizEnBigName}.reload();
+	}, function (data) {
+	Feng.error("删除失败!" + data.msg + "!");
+	});
+	ajax.set("${keyTableField.propertyName}",${keyTableField.propertyName});
+        <% if(subTableField !=null){%>
+	ajax.set("${subTableField.propertyName}",${subTableField.propertyName});
+        <% } %>
+	ajax.start();
+};
+
+/**
+ * 查询${table.comment}列表
+ */
+${bizEnBigName}.reload = function () {
+	var options={};
+    var where = {};
+    where['${keyTableField.propertyName}'] = $("#${keyTableField.propertyName}").val();
+    options['where']=where;
+    this.table.reload(this.tableId,options);
+};
+
+// 监听单元格编辑
+${bizEnBigName}.editFuc = function(obj){
+    var value = obj.value // 得到修改后的值
+    ,data = obj.data // 得到所在行所有键值
+    ,field = obj.field; // 得到字段
+    var ${bizEnName}Data={};
+    ${bizEnName}Data['${keyTableField.propertyName}']=data.${keyTableField.propertyName};
+     <% if(subTableField !=null){%>
+    ${bizEnName}Data['${subTableField.propertyName}']=data.${subTableField.propertyName};
+      <% } %>
+    ${bizEnName}Data[field]=value;
+    
+    // 提交信息
+    var ajax = new $ax(Feng.ctxPath + "/${bizProjectName}/${moduleName}/${bizEnName}/update", function(data){
+        Feng.success("修改成功!");
+       ${bizEnBigName}.reload();
+    },function(data){
+        Feng.error("修改失败!" + data.msg + "!");
+    });
+    ajax.setBody(${bizEnName}Data);
+    ajax.start();
+    
+  
+};
+// 头工具栏事件
+${bizEnBigName}.toolbarFuc = function(obj){
+	// 查询
+	if(obj.event === 'reload'){
+		${bizEnBigName}.reload();
+	}else if(obj.event === 'add'){
+		${bizEnBigName}.openAdd${bizEnBigName}();
+	}
+};
+// 监听行工具事件
+${bizEnBigName}.toolFuc = function(obj){
+    var data = obj.data;
+    // console.log(obj)
+    if(obj.event === 'del'){
+        layer.confirm("确定删除吗?", function(){
+        layer.close(layer.index);
+     <% if(subTableField !=null){%>
+    	${bizEnBigName}.delete(data.${keyTableField.propertyName},data.${subTableField.propertyName});
+      <% }else{ %>
+        ${bizEnBigName}.delete(data.${keyTableField.propertyName});
+      <% } %>
+         });
+    } else if(obj.event === 'edit'){
+    	${bizEnBigName}.open${bizEnBigName}Detail(data.${keyTableField.propertyName}<% if(subTableField !=null){%>,data.${subTableField.propertyName}<%}%>);
+    }
+  };
+$(function () {
+	${bizEnBigName}.initTable();
+});

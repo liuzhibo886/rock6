@@ -1,0 +1,49 @@
+server: 
+  port: 9010  #启动端口
+  tomcat: 
+    min-spare-threads: 20  #初始线程20
+    max-threads: 100  #最大线程100
+    connection-timeout: 5000  #超时时间5000ms
+    
+spring: 
+  application: 
+    name: rock-gateway  #为你的应用起个名字，该名字将注册到注册中心
+  cloud: 
+    nacos: 
+      discovery: 
+        server-addr: localhost:8848  #nacos注册地址,多个逗号隔开
+    gateway: 
+      discovery: 
+        locator: 
+          enabled: true  #发现注册的服务
+          lower-case-service-id: true #通过小写字母来发现服务
+      routes: 
+        - id: rock-demo
+          uri: lb://rock-demo
+          predicates: 
+            - Path=/rock/demo/**
+  main: 
+    allow-bean-definition-overriding: true  #相同的名字的所有接口整合成一个接口
+  aop: 
+    proxy-target-class: true  #false为启用jdk默认动态代理,true为cglib动态代理
+  jackson: 
+    date-format: yyyy-MM-dd HH:mm:ss  #指定日期显示格式
+    time: GMT+8  #指定日期时区
+  devtools: 
+    restart: 
+      enabled: false  ##热部署生效true（true/false)
+      additional-paths: src/main/java
+  redis: 
+    host: localhost
+    port: 26379
+    password: a123
+    database: 8 
+    
+     
+rocketmq: 
+  isEnable: true
+  namesrvAddr: localhost:9876
+
+token: 
+  aes: 
+    encodeRules: lfQAJW3NbqxVaA91BIokibZGXWmFz7eq      

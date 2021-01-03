@@ -1,0 +1,171 @@
+package ${package.Controller};
+
+
+import ${controllerfacadePackage}.${bizEnBigName}Facade;
+import org.springframework.web.bind.annotation.RequestParam;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import lombok.extern.slf4j.Slf4j;
+import com.lzb.rock.base.factory.PageFactory;
+import com.lzb.rock.base.model.Result;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import ${package.Entity}.${entity};
+import ${entityListReqPackage}.${bizEnBigName}ListReq;
+import ${package.Service}.${table.serviceName};
+import org.apache.commons.lang3.StringUtils;
+import java.util.List;
+import com.lzb.rock.base.enums.BzcstEnum;
+<% if(restControllerStyle){ %>
+import org.springframework.web.bind.annotation.RestController;
+<% }else{ %>
+import org.springframework.stereotype.Controller;
+<% } %>
+<% if(isNotEmpty(superControllerClassPackage)){ %>
+import ${superControllerClassPackage};
+<% } %>
+
+/**
+ * <p>
+ * ${table.comment!} 控制器
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+<% if(restControllerStyle){ %>
+@RestController
+<% }else{ %>
+@Controller
+<% } %>
+@Api(tags = { "${table.comment!}控制器" })
+@Slf4j
+public class ${msControllerName} implements ${entity}Facade{
+
+	@Autowired
+	${table.serviceName} ${bizEnNameService};
+
+
+    @PostMapping(value = context+"/list")
+    @ResponseBody
+    @ApiOperation(value = "获取${table.comment}列表")
+    public Result<Page<${table.entityName}>> list(@RequestBody ${table.entityName}ListReq ${bizEnName}ListReq){
+    	
+		Page<${table.entityName}> page = new PageFactory<${table.entityName}>().defaultPage(${bizEnName}ListReq);
+		LambdaQueryWrapper<${table.entityName}> queryWrapper = Wrappers.lambdaQuery();
+		Page<${table.entityName}> pageResp = ${bizEnNameService}.page(page, queryWrapper);
+		return new Result<Page<${table.entityName}>>(pageResp);
+    }
+
+    @PostMapping(value = context+"/records")
+    @ResponseBody
+    @ApiOperation(value = "获取${table.comment}列表(无分页)")
+    public Result<List<${table.entityName}>> records(@RequestBody ${table.entityName}ListReq ${bizEnName}ListReq){
+    	LambdaQueryWrapper<${table.entityName}> queryWrapper = Wrappers.lambdaQuery();
+    	queryWrapper.last(" limit " + ${bizEnName}ListReq.getOffset() + "," + ${bizEnName}ListReq.getLimit());
+    	List<${table.entityName}> rows = ${bizEnNameService}.list(queryWrapper);
+		return new Result<List<${table.entityName}>>(rows);
+    }
+ 
+
+    @PostMapping(value = context+"/add")
+    @ResponseBody
+    @ApiOperation(value = "新增${table.comment}")
+    public Result<${table.entityName}> add(@RequestBody ${table.entityName} ${bizEnName}){
+    	${bizEnNameService}.save(${bizEnName});
+    	return new Result<${table.entityName}>(${bizEnName});
+    }
+
+
+    @PostMapping(value = context+"/delete")
+    @ResponseBody
+    @ApiOperation(value = "删除${table.comment}")
+	@ApiImplicitParams({ @ApiImplicitParam(name = "${keyTableField.propertyName}", value = "${keyTableField.comment}"),<% if(subTableField !=null){%>
+	@ApiImplicitParam(name = "${subTableField.propertyName}", value = "${subTableField.comment}"),<% }%>
+	@ApiImplicitParam(name = "lastUser", value = "最后修改人") })
+    public Result<Void> delete(@RequestParam(name="${keyTableField.propertyName}") ${keyTableField.propertyType} ${keyTableField.propertyName}<% if(subTableField !=null){%>,@RequestParam(name="${subTableField.propertyName}",required=false) ${subTableField.propertyType} ${subTableField.propertyName}<% }%><% if(tool.isTableField(table,"last_user")){ %>,@RequestParam(name="lastUser",required=false)String lastUser<% } %>){
+    	LambdaUpdateWrapper<${table.entityName}> updateWrapper = Wrappers.lambdaUpdate();
+    	${table.entityName} entity = new ${table.entityName}();
+    	<% if(tool.isTableField(table,"is_del")){ %>
+		entity.setIsDel(1);
+		<% } %>
+		<% if(tool.isTableField(table,"last_user")){ %>
+		entity.setLastUser(lastUser);
+		<% } %>
+		updateWrapper.eq(${table.entityName}::get${tool.firstCharToUpperCase(keyTableField.propertyName)}, ${keyTableField.propertyName});
+   	<% if(subTableField !=null && subTableField.propertyType =="String"){ %>
+   		if( StringUtils.isNotBlank(${subTableField.propertyName})){
+  		 updateWrapper.eq(${table.entityName}::get${tool.firstCharToUpperCase(subTableField.propertyName)}, ${subTableField.propertyName});
+   		}
+   	<% } else if(subTableField !=null){ %>
+   	    if(${subTableField.propertyName} !=null){
+  		 updateWrapper.eq(${table.entityName}::get${tool.firstCharToUpperCase(subTableField.propertyName)}, ${subTableField.propertyName});
+   		}
+   	<% } %>
+		Integer count = ${bizEnNameService}.update(entity,updateWrapper);
+       	if(count > 0) {
+			return new Result<Void>();
+		}else {
+			return new Result<Void>(BzcstEnum.DELETE_ERR);
+		}
+    }
+
+    @PostMapping(value = context+"/update")
+    @ResponseBody
+    @ApiOperation(value = "修改${table.comment}")
+    public Result<Void> update(@RequestBody ${table.entityName} ${bizEnName}){
+    	LambdaUpdateWrapper<${table.entityName}> updateWrapper = Wrappers.lambdaUpdate();
+   		updateWrapper.eq(${table.entityName}::get${keyTableField.capitalName}, ${bizEnName}.get${keyTableField.capitalName}());
+   	<% if(subTableField !=null && subTableField.propertyType =="String"){ %>
+   		if( StringUtils.isNotBlank(${bizEnName}.get${subTableField.capitalName}())){
+  		 updateWrapper.eq(${table.entityName}::get${keyTableField.capitalName}, ${bizEnName}.get${subTableField.capitalName}());
+   		}
+   	<% } else if(subTableField != null){ %>
+   	    if(${bizEnName}.get${subTableField.capitalName}() !=null){
+  		  updateWrapper.eq(${table.entityName}::get${keyTableField.capitalName}, ${bizEnName}.get${subTableField.capitalName}());
+   		}
+   	<% } %>
+   		${bizEnName}.set${keyTableField.capitalName}(null);
+   	<% if(subTableField !=null){ %>
+   		${bizEnName}.set${subTableField.capitalName}(null);
+   	<% }%>
+      	Integer count=${bizEnNameService}.update(${bizEnName},updateWrapper);
+        if(count > 0) {
+			return new Result<Void>();
+		}else {
+			return new Result<Void>(BzcstEnum.UPDATE_ERR);
+		}
+    }
+
+
+    @PostMapping(value = context+"/detail")
+    @ResponseBody
+    @ApiOperation(value = "${table.comment}详情")
+    @ApiImplicitParams({ @ApiImplicitParam(name = "${keyTableField.propertyName}", value = "${keyTableField.comment}")<% if(subTableField !=null){%>,
+	@ApiImplicitParam(name = "${subTableField.propertyName}", value = "${subTableField.comment}")<% }%>
+	 })
+    public Result<${table.entityName}> detail(@RequestParam(name="${keyTableField.propertyName}") ${keyTableField.propertyType} ${keyTableField.propertyName}<% if(subTableField !=null){%>,@RequestParam(name="${subTableField.propertyName}",required=false) ${subTableField.propertyType} ${subTableField.propertyName}<% }%>){
+    	LambdaQueryWrapper<${table.entityName}> queryWrapper = Wrappers.lambdaQuery();
+    	queryWrapper.eq(${table.entityName}::get${keyTableField.capitalName},${keyTableField.propertyName});
+    <% if(subTableField !=null && subTableField.propertyType =="String"){ %>
+   		if( StringUtils.isNotBlank(${subTableField.propertyName})){
+  		 queryWrapper.eq(${table.entityName}::get${keyTableField.capitalName}, ${subTableField.propertyName});
+   		}
+   	<% } else if(subTableField != null){ %>
+   	    if(${subTableField.propertyName} !=null){
+  		  queryWrapper.eq(${table.entityName}::get${keyTableField.capitalName}, ${subTableField.propertyName});
+   		}
+   	<% } %>
+    	${table.entityName} ${bizEnName}=${bizEnNameService}.getOne(queryWrapper);
+    	return new Result<${table.entityName}>(${bizEnName});
+    }
+}
+

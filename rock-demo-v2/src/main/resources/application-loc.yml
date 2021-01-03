@@ -1,0 +1,116 @@
+server: 
+  port: 9008  #启动端口
+  servlet: 
+    context-path: /rock/demo
+  tomcat: 
+    min-spare-threads: 20  #初始线程20
+    max-threads: 100  #最大线程100
+    connection-timeout: 5000  #超时时间5000ms
+    uri-encoding: UTF-8
+    
+spring: 
+  application: 
+    name: rock-demo  #为你的应用起个名字，该名字将注册到注册中心
+  cloud: 
+    nacos: 
+      discovery: 
+        server-addr: localhost:8848  #nacos注册地址,多个逗号隔开
+  main: 
+    allow-bean-definition-overriding: true  #相同的名字的所有接口整合成一个接口
+  aop: 
+    proxy-target-class: true  #false为启用jdk默认动态代理,true为cglib动态代理
+  data: 
+    mongodb: 
+      uri: mongodb://rock4:rock4123456@localhost:27017/rock4?authSource=admin  #mongodb配置
+  jackson: 
+    date-format: yyyy-MM-dd HH:mm:ss  #指定日期显示格式
+    time: GMT+8  #指定日期时区
+  devtools: 
+    restart: 
+      enabled: false  ##热部署生效true（true/false)
+      additional-paths: src/main/java
+#  datasource: 
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://mysql.liuzhibo.top:10144/rock01?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+#    username: root
+#    password: xdd520@LZB
+#    maxActive: 50 #数据源最大连接数
+#    initialSize: 2  #数据源初始连接数
+  jpa: 
+    database: MYSQL
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect #建表选择InnoDB引擎
+    show-sql: true #打印sql
+    hibernate: 
+      ddl-auto: create #启动删除表，创建数据库表
+  redis: 
+    host: localhost
+    port: 26379
+    password: a123
+    database: 8 
+  #配置rabbitMq 服务器
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: a123
+    
+sharding: 
+  enabled: true
+  basePackages: com.lzb.rock.**
+  datasource: 
+    m0: 
+      url: jdbc:mysql://localhost:3306/rock1?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: a123
+      filters: log4j,wall,mergeStat
+    m0s0: 
+      url: jdbc:mysql://localhost:3307/rock1?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: a123
+      filters: log4j,wall,mergeStat
+    m0s1: 
+      url: jdbc:mysql://localhost:3308/rock1?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: a123
+      filters: log4j,wall,mergeStat
+    m1: 
+      url: jdbc:mysql://localhost:3306/rock2?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: a123
+      filters: log4j,wall,mergeStat
+    m1s0: 
+      url: jdbc:mysql://localhost:3307/rock2?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: a123
+      filters: log4j,wall,mergeStat
+    m1s1: 
+      url: jdbc:mysql://localhost:3308/rock2?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: a123
+      filters: log4j,wall,mergeStat
+    m2: 
+      url: jdbc:mysql://localhost:3306/rock3?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: a123
+      filters: log4j,wall,mergeStat
+    m2s0: 
+      url: jdbc:mysql://localhost:3307/rock3?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: a123
+      filters: log4j,wall,mergeStat
+    m2s1: 
+      url: jdbc:mysql://localhost:3308/rock3?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: a123
+      filters: log4j,wall,mergeStat
+      
+rocketmq: 
+  isEnable: true
+  namesrvAddr: localhost:9876
+  
+token: 
+  aes: 
+    encodeRules: lfQAJW3NbqxVaA91BIokibZGXWmFz7eq
+
+      

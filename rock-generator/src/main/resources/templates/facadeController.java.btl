@@ -1,0 +1,73 @@
+package ${controllerfacadePackage};
+
+
+import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import ${package.Entity}.${entity};
+
+import ${entityListReqPackage}.${entity}ListReq;
+<% if(restControllerStyle){ %>
+<% }else{ %>
+import org.springframework.stereotype.Controller;
+<% } %>
+<% if(isNotEmpty(superControllerClassPackage)){ %>
+import ${superControllerClassPackage};
+<% } %>
+import com.lzb.rock.base.model.Result;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
+/**
+ * <p>
+ * ${table.comment!} Facade 接口
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+public interface ${entity}Facade{
+
+    static String SERVICE_NAME="";
+    static String context="<% if(isNotEmpty(bizProjectName)){ %>/${bizProjectName}<% } %><% if(isNotEmpty(package.ModuleName)){ %>/${package.ModuleName}<% } %>/${bizEnName}";
+    /**
+   	  * 获取${table.comment}列表
+     */
+    @PostMapping(value = context+"/list")
+    @ResponseBody
+    public Result<Page<${table.entityName}>> list(@RequestBody ${table.entityName}ListReq ${bizEnName}ListReq);
+     /**
+   	  * 获取${table.comment}列表(无分页)
+     */
+    @PostMapping(value = context+"/records")
+    @ResponseBody
+    public Result<List<${table.entityName}>> records(@RequestBody ${table.entityName}ListReq ${bizEnName}ListReq);
+ 
+    /**
+	* 新增${table.comment}
+     */
+    @PostMapping(value = context+"/add")
+    @ResponseBody
+    public Result<${table.entityName}> add(@RequestBody ${table.entityName} ${bizEnName});
+
+    /**
+      * 删除${table.comment}
+     */
+    @PostMapping(value = context+"/delete")
+    @ResponseBody
+    public Result<Void> delete(@RequestParam(name="${keyTableField.propertyName}") ${keyTableField.propertyType} ${keyTableField.propertyName}<% if(subTableField !=null){%>,@RequestParam(name="${subTableField.propertyName}",required=false) ${subTableField.propertyType} ${subTableField.propertyName}<% }%><% if(tool.isTableField(table,"last_user")){ %>,@RequestParam(name="lastUser",required=false)String lastUser<% } %>);
+    /**
+     * 修改${table.comment}
+     */
+    @PostMapping(value = context+"/update")
+    @ResponseBody
+    public Result<Void> update(@RequestBody ${table.entityName} ${bizEnName});
+
+    /**
+     * ${table.comment}详情
+     */
+    @PostMapping(value = context+"/detail")
+    @ResponseBody
+    public Result<${table.entityName}> detail(@RequestParam(name="${keyTableField.propertyName}") ${keyTableField.propertyType} ${keyTableField.propertyName}<% if(subTableField !=null){%>,@RequestParam(name="${subTableField.propertyName}",required=false) ${subTableField.propertyType} ${subTableField.propertyName}<% }%>);
+}

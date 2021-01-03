@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.lzb</groupId>
+		<artifactId>rock</artifactId>
+		<version>6.0.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.lzb.rock.demo</groupId>
+	<artifactId>rock-demo</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>rock-demo</name>
+	<url>http://maven.apache.org</url>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.lzb.rock.mongo</groupId>
+			<artifactId>rock-mongo</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.lzb.rock.rocketmq</groupId>
+			<artifactId>rock-rocketmq</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.lzb.rock.redis</groupId>
+			<artifactId>rock-redis</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.lzb.rock.sharding</groupId>
+			<artifactId>rock-sharding</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.lzb.rock.mybatis</groupId>
+			<artifactId>rock-mybatis</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<!--编译默认跳过单元测试 -->
+	<properties>
+		<skipTests>true</skipTests>
+	</properties>
+	<build>
+		<finalName>${project.name}-${project.version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.lzb.rock.demo.DemoApplication</mainClass>
+					<charset>${project.build.charsetEncoding}</charset>
+					<encoding>${project.build.docencodingEncoding}</encoding>
+					<docencoding>${project.build.docencodingEncoding}</docencoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.source.version}</source>
+					<target>${java.target.version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

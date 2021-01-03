@@ -1,0 +1,29 @@
+\<% layout("/common/_container.html"){ %>
+<div class="container-fluid">
+	<div class="layui-form" style="margin-top: 20px">
+		<div class="layui-form-item" >
+			<#Input id="${keyTableField.propertyName}" name="${keyTableField.comment}" placeholder="ID" />
+		</div>
+	</div>
+	<table class="layui-table" id="${bizEnName}Table" lay-filter="${bizEnName}Table"></table>
+	
+	<script type="text/html" id="${bizEnName}Toolbar">
+	  <div class="layui-btn-container">
+	    <button class="layui-btn layui-btn-sm" lay-event="reload"><i class="layui-icon layui-icon-search"></i></i>查询</button>
+	    \<% if(shiro.hasPermission("/${bizProjectName}/${moduleName}/${bizEnName}/add")){ %>
+	    <button class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加</button>
+	    \<% } %>
+	  </div>
+	</script>
+	
+	<script type="text/html" id="${bizEnName}Bar">
+	 \<% if(shiro.hasPermission("/${bizProjectName}/${moduleName}/${bizEnName}/update")){ %>
+	  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+	  \<% } %>
+	  \<% if(shiro.hasPermission("/${bizProjectName}/${moduleName}/${bizEnName}/delete")){ %>
+	  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	  \<% } %>
+	</script>
+	<script src="\${ctxPath}/view/${bizProjectName}/${moduleName}/${bizEnName}/${bizEnName}.js"></script>
+</div>
+\<% } %>

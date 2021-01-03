@@ -1,0 +1,27 @@
+package ${entityListReqPackage};
+
+<% if(swagger2){ %>
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+<% } %>
+<% if(entityLombokModel){ %>
+import lombok.Data;
+<% } %>
+import com.lzb.rock.base.model.PageReq;
+/**
+ * <p>
+ * ${table.comment!}List查询对象
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+<% if(swagger2){ %>
+@ApiModel(value="${entity}ListReq对象", description="${table.comment!''}list查询对象")
+<% } %>
+@Data
+public class ${entity}ListReq extends PageReq {
+
+	private static final long serialVersionUID = 1L;
+	
+}

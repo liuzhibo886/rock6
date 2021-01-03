@@ -1,0 +1,124 @@
+package ${controllerAdminPackage};
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lzb.rock.base.enums.BzcstEnum;
+import com.lzb.rock.base.exception.RockException;
+import com.lzb.rock.base.facade.IShiro;
+import com.lzb.rock.base.model.Result;
+import com.lzb.rock.base.util.UtilBean;
+import com.lzb.rock.base.util.UtilJson;
+import ${controllerClientPackage}. ${entity}Client;
+import ${entityListReqPackage}.${entity}ListReq;
+import ${package.Entity}.${entity};
+
+/**
+ * ${table.comment}控制器
+ *
+ * @author ${author}
+ * @Date ${date}
+ */
+@Controller
+@RequestMapping("/${bizProjectName}/${moduleName}/${bizEnName}")
+public class ${bizEnBigName}Controller{
+
+    private String PREFIX = "/${bizProjectName}/${moduleName}/${bizEnName}/";
+
+    @Autowired
+    private ${bizEnBigName}Client ${bizEnName}Client;
+
+	@Autowired
+	IShiro shiro;
+    /**
+	 * 跳转到${table.comment}首页
+     */
+    @RequestMapping("")
+    public String index() {
+        return PREFIX + "${bizEnName}.html";
+    }
+
+    /**
+	* 跳转到添加${table.comment}
+     */
+    @RequestMapping("/${bizEnName}_add")
+    public String ${bizEnName}Add() {
+        return PREFIX + "${bizEnName}_add.html";
+    }
+
+    /**
+ 	 * 跳转到修改${table.comment}
+     */
+    @RequestMapping("/${bizEnName}_update")
+    public String ${bizEnName}Update(@RequestParam(name="${keyTableField.propertyName}") ${keyTableField.propertyType} ${keyTableField.propertyName}<% if(subTableField !=null){%>,@RequestParam(name="${subTableField.propertyName}",required=false) ${subTableField.propertyType} ${subTableField.propertyName}<% }%>, Model model) {
+        Result<${bizEnBigName}> rs = ${bizEnName}Client.detail(${keyTableField.propertyName}<% if(subTableField !=null){%>,${subTableField.propertyName}<% }%>);
+        if (rs.check()) {
+			model.addAttribute("item", rs.getData());
+		}else {
+			throw new RockException(BzcstEnum.SELECT_ERR);
+		}
+        return PREFIX + "${bizEnName}_edit.html";
+    }
+
+    /**
+	 * 获取${table.comment}列表
+     */
+    @RequestMapping(value = "/list")
+    @ResponseBody
+    public Result<Page<${bizEnBigName}>> list(@RequestBody ${bizEnBigName}ListReq  req) {
+		Result<Page<${bizEnBigName}>> rs = ${bizEnName}Client.list(req);
+		return rs;
+    }
+
+    /**
+	* 新增${table.comment}
+     */
+    @RequestMapping(value = "/add")
+    @ResponseBody
+    public Result<${bizEnBigName}> add(@RequestBody ${bizEnBigName} ${bizEnName}) {
+   		UtilBean.setNull(${bizEnName});
+    	<% if(tool.isTableField(table,"last_user")){ %>${bizEnName}.setLastUser(UtilJson.getStr(shiro.getUser())); <% } %>  
+        Result<${bizEnBigName}> rs = ${bizEnName}Client.add(${bizEnName});
+		return rs;
+    }
+
+    /**
+	 * 删除${table.comment}
+     */
+    @RequestMapping(value = "/delete")
+    @ResponseBody
+    public Result<Void> delete(@RequestParam(name="${keyTableField.propertyName}") ${keyTableField.propertyType} ${keyTableField.propertyName}<% if(subTableField !=null){%>,@RequestParam(name="${subTableField.propertyName}",required=false) ${subTableField.propertyType} ${subTableField.propertyName}<% }%>) {
+        Result<Void> rs = ${bizEnName}Client.delete(${keyTableField.propertyName}<% if(subTableField !=null){%>,${subTableField.propertyName}<% }%><% if(tool.isTableField(table,"last_user")){ %>,UtilJson.getStr(shiro.getUser())<% } %>);
+		return rs;
+    }
+
+    /**
+	* 修改${table.comment}
+     */
+    @RequestMapping(value = "/update")
+    @ResponseBody
+    public Result<Void> update(@RequestBody ${bizEnBigName} ${bizEnName}) {
+   		UtilBean.setNull(${bizEnName});
+   		<% if(tool.isTableField(table,"last_user")){ %>
+        ${bizEnName}.setLastUser(UtilJson.getStr(shiro.getUser()));
+        <% } %>
+        Result<Void> rs=${bizEnName}Client.update(${bizEnName});
+		return rs;
+    }
+
+    /**
+	* ${table.comment}详情
+     */
+    @RequestMapping(value = "/detail")
+    @ResponseBody
+    public Result<${bizEnBigName}> detail(@RequestParam(name="${keyTableField.propertyName}") ${keyTableField.propertyType} ${keyTableField.propertyName}<% if(subTableField !=null){%>,@RequestParam(name="${subTableField.propertyName}",required=false) ${subTableField.propertyType} ${subTableField.propertyName}<% }%>) {
+        Result<${bizEnBigName}> rs = ${bizEnName}Client.detail(${keyTableField.propertyName} <% if(subTableField !=null){%>,${subTableField.propertyName}<% }%>);
+		return rs;
+    }
+}
