@@ -34,7 +34,7 @@ spring:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    url: jdbc:mysql://mysql.liuzhibo.top:10144/rock01?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
 #    username: root
-#    password: xdd520@LZB
+#    password: a123
 #    maxActive: 50 #数据源最大连接数
 #    initialSize: 2  #数据源初始连接数
   jpa: 
